@@ -16,11 +16,11 @@ screen = pygame.display.set_mode((sw, sh))
 width = screen.get_width()
 height = screen.get_height()
 
-allColors = [(255, 255, 255), (170, 170, 170), (85, 85, 85), (15, 15, 15),
+allColors = [(255, 15, 15), (170, 170, 170), (85, 85, 85), (15, 15, 15),
              (255, 255, 85), (0, 170, 0), (85, 255, 85), (255, 85, 85),
              (170, 0, 0), (170, 85, 0), (170, 0, 170), (255, 85, 255),
              (85, 255, 255), (0, 170, 170), (0, 0, 170), (85, 85, 255)]
-selectedColor = allColors[5]
+selectedColor = allColors[0]
 
 
 class Grid(object):
@@ -60,8 +60,17 @@ class Grid(object):
                             pygame.mouse.get_pos()[1] <=
                             self.arr[i][j].getLocationY() +
                             self.arr[i][j].getSize()):
-                        print(selectedColor)
                         self.arr[i][j].change_color(selectedColor)
+                elif (pygame.mouse.get_pressed() == (0, 0, 1)):
+                    if (self.arr[i][j].getLocationX() <=
+                            pygame.mouse.get_pos()[0] <=
+                            self.arr[i][j].getLocationX() +
+                            self.arr[i][j].getSize()
+                            and self.arr[i][j].getLocationY() <=
+                            pygame.mouse.get_pos()[1] <=
+                            self.arr[i][j].getLocationY() +
+                            self.arr[i][j].getSize()):
+                        self.arr[i][j].change_color((255, 255, 255))
 
     #changes specific pixel color
     def change_color(self, posx, posy, color):
@@ -111,9 +120,8 @@ def renderGUI():
     draw_rect_border((25, 25, 25), (0, 0, 0), 5, (sw - 200, 0), (200, sh))
     global selectedColor
     index = 0
-    for j in range(2):
+    for j in range(4):
         for y in range(4):
-            index = index + 1
             Size = 30
             locX = (sw - 175) + (y * Size)
             locY = (sh / 2) - (j * Size)
@@ -128,6 +136,7 @@ def renderGUI():
                 if (locX <= pygame.mouse.get_pos()[0] <= locX + Size
                         and locY <= pygame.mouse.get_pos()[1] <= locY + Size):
                     selectedColor = allColors[index]
+            index = index + 1
 
 
 zoomFactor = 400
