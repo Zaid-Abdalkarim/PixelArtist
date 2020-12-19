@@ -4,7 +4,6 @@ import pyautogui
 import tkinter
 from tkinter import *
 from tkinter import messagebox
-from tkinter.filedialog import askopenfilename, asksaveasfilename
 import sys
 import os
 
