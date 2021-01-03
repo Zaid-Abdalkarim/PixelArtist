@@ -6,6 +6,9 @@ from tkinter import *
 from tkinter import messagebox
 import sys
 import os
+import keyboard as kb
+import numpy as np
+from PIL import Image
 
 sys.setrecursionlimit(10000)
 pygame.init()
@@ -99,6 +102,21 @@ class Grid(object):
                      (((self.documentSize / self.pixelSize) * j) +
                       newOffsetY)))
 
+    def Save(self, canvas_size):
+        array = np.zeros([canvas_size, canvas_size, 3], dtype=np.uint8)
+        for x in range(canvas_size):
+            for y in range(canvas_size):
+                array[y, x] = [
+                    self.arr[x][y].getColor()[0], self.arr[x][y].getColor()[1],
+                    self.arr[x][y].getColor()[2]
+                ]
+        rescaled = (255 / array.max() * (array - array.min())).astype(np.uint8)
+        img = Image.fromarray(rescaled)
+        img.save(
+            "C://Users//Lepter//OneDrive//Desktop//Paint Replica//outfile.jpg",
+            quality=100,
+            subsampling=0)
+
 
 #draws a typical rectangle with an outline
 def draw_rect_border(fill_color, outline_color, outline_size, location, size):
@@ -142,7 +160,8 @@ def renderGUI():
 zoomFactor = 400
 offsetX = (sw - zoomFactor) / 2
 offsetY = (sh - zoomFactor) / 2
-globalGrid = Grid(16, zoomFactor, offsetX, offsetY)
+canvas_size = 16
+globalGrid = Grid(canvas_size, zoomFactor, offsetX, offsetY)
 # screen size subtract what you want then divide by two I think
 white = (255, 255, 255)
 
@@ -155,11 +174,30 @@ running = True
 isReleased = False
 lastMousePos = pygame.mouse.get_pos()
 
+choseAspect = False  # This is to check if the person has chosen the Pixel Art canvas Size
+
 while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+    for e in pygame.event.get():
+        if e.type == pygame.QUIT:
             running = False
-    screen.fill(allColors[3])
+        if e.type == pygame.MOUSEBUTTONDOWN:
+            if e.button == 4:
+                zoomFactor = zoomFactor + 100
+                globalGrid.updateZoomFactor(zoomFactor, (sw - zoomFactor) / 2,
+                                            (sh - zoomFactor) / 2)
+            if e.button == 5:
+                zoomFactor = zoomFactor + -100
+                globalGrid.updateZoomFactor(zoomFactor, (sw - zoomFactor) / 2,
+                                            (sh - zoomFactor) / 2)
+
+    if kb.is_pressed("ctrl+s"):
+        #save
+        globalGrid.Save(canvas_size)
+
+    screen.fill((30, 30, 30))
+
+    screen.fill(allColors[3])  #background color
+
     if (pygame.mouse.get_pressed() == (0, 1, 0)):
         if (isReleased == False):
             isReleased = True
@@ -170,17 +208,6 @@ while running:
             globalGrid.updateOffset(
                 ((pygame.mouse.get_pos()[0] - lastMousePos[0]) / 3) + offsetX,
                 ((pygame.mouse.get_pos()[1] - lastMousePos[1]) / 3) + offsetY)
-
-    for e in pygame.event.get():
-        if e.type == pygame.MOUSEBUTTONDOWN:
-            if e.button == 4:
-                zoomFactor = zoomFactor + 100
-                globalGrid.updateZoomFactor(zoomFactor, (sw - zoomFactor) / 2,
-                                            (sh - zoomFactor) / 2)
-            if e.button == 5:
-                zoomFactor = zoomFactor + -100
-                globalGrid.updateZoomFactor(zoomFactor, (sw - zoomFactor) / 2,
-                                            (sh - zoomFactor) / 2)
 
     mouse = pygame.mouse.get_pos()
     globalGrid.Draw()
