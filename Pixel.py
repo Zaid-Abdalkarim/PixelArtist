@@ -33,12 +33,6 @@ class Pixel(object):
         self.pos = (x, y)
         win.blit(self.subsurface, self.pos)
 
-    def getNeighbor(self):
-        return neighbor
-
-    def setNeighbor(self, _neighbor):
-        self.neighbor.append(_neighbor)
-
     def getColor(self):
         return self.color
 
