@@ -2,8 +2,6 @@ from Pixel import *
 import pygame
 import pyautogui
 import tkinter
-from tkinter import *
-from tkinter import messagebox
 import sys
 import os
 import keyboard as kb
@@ -164,8 +162,6 @@ canvas_size = 16
 globalGrid = Grid(canvas_size, zoomFactor, offsetX, offsetY)
 # screen size subtract what you want then divide by two I think
 white = (255, 255, 255)
-
-root = tkinter.Tk()
 
 color_light = (170, 170, 170)
 color_dark = (100, 100, 100)
